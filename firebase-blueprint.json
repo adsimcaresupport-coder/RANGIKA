@@ -1,0 +1,87 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile with role-based access control",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "patron"] },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "email", "role"]
+    },
+    "Painting": {
+      "title": "Painting",
+      "description": "Handcrafted Mithila painting catalog item",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "sku": { "type": "string" },
+        "title": { "type": "string" },
+        "subtitle": { "type": "string" },
+        "category": { "type": "string" },
+        "price": { "type": "number" },
+        "stockQuantity": { "type": "number" },
+        "isPublished": { "type": "boolean" },
+        "inStock": { "type": "boolean" },
+        "image": { "type": "string" }
+      },
+      "required": ["id", "title", "price", "category"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Customer order with artworks and payment status",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "customerName": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "total": { "type": "number" },
+        "orderStatus": { "type": "string" },
+        "paymentStatus": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "customerName", "total", "orderStatus"]
+    },
+    "CustomRequest": {
+      "title": "CustomRequest",
+      "description": "Custom Mithila painting brief",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "customerName": { "type": "string" },
+        "email": { "type": "string" },
+        "theme": { "type": "string" },
+        "budget": { "type": "string" },
+        "status": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "customerName", "theme", "status"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "User profile documents"
+    },
+    "/paintings/{paintingId}": {
+      "schema": { "$ref": "#/entities/Painting" },
+      "description": "Mithila artwork products collection"
+    },
+    "/orders/{orderId}": {
+      "schema": { "$ref": "#/entities/Order" },
+      "description": "Customer order documents"
+    },
+    "/customRequests/{requestId}": {
+      "schema": { "$ref": "#/entities/CustomRequest" },
+      "description": "Custom painting commission requests"
+    }
+  }
+}

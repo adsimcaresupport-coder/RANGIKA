@@ -1,0 +1,6 @@
+{
+  "name": "RANGIKA - Traditional Mithila & Madhubani Art",
+  "description": "Authentic handcrafted Mithila paintings, custom Madhubani artwork, and cultural home decor. Rooted in heritage, created by hand, made for today.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,80 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (
+        request.auth.token.email == 'adsimcaresupport@gmail.com' ||
+        request.auth.token.email == 'admin@rangika.art' ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
+      );
+    }
+
+    // User profiles
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create, update: if isOwner(userId) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Paintings catalog (public read, admin write)
+    match /paintings/{paintingId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Orders (creator can create and read their own, admin can read/write all)
+    match /orders/{orderId} {
+      allow read: if isAdmin() || (isAuthenticated() && resource.data.userId == request.auth.uid);
+      allow create: if true;
+      allow update, delete: if isAdmin();
+    }
+
+    // Custom Requests
+    match /customRequests/{requestId} {
+      allow read: if isAdmin() || (isAuthenticated() && resource.data.userId == request.auth.uid);
+      allow create: if true;
+      allow update, delete: if isAdmin();
+    }
+
+    // Wholesale enquiries
+    match /wholesaleEnquiries/{enquiryId} {
+      allow read, update, delete: if isAdmin();
+      allow create: if true;
+    }
+
+    // Coupons
+    match /coupons/{couponId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // CMS Content
+    match /cmsContent/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Stock & Audit Logs
+    match /stockLogs/{logId} {
+      allow read, write: if isAdmin();
+    }
+    match /auditLogs/{logId} {
+      allow read, write: if isAdmin();
+    }
+
+    // Test connection doc
+    match /test/{docId} {
+      allow read, write: if true;
+    }
+  }
+}
